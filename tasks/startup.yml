@@ -70,7 +70,7 @@
     - config
     - runtime-config
 
-- name:p Prepare delete-trigger-restxq-autostart XQuery script
+- name: Prepare delete-trigger-restxq-autostart XQuery script
   template:
     src: delete-trigger-restxq-autostart.xql.j2
     dest: "{{ exist_path }}/delete-trigger-restxq-autostart.xql"
