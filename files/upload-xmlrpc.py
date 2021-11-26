@@ -60,7 +60,7 @@ str_data = "\n".join(input_data)
 
 socket.setdefaulttimeout(xmlrpcTimeout)
 
-print("ServerProxy {xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc".format(**locals()))
+# print("ServerProxy {xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc".format(**locals()))
 proxy = ServerProxy('{xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc'.format(**locals()))
 
 if (scriptName == 'execute-xmlrpc.py'):
