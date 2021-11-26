@@ -69,18 +69,18 @@ if (scriptName == 'execute-xmlrpc.py'):
     startWithResultNumber = 1
     params = {}
     try:
-        print(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
+        proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params)
     except Error as v:
         print("ERROR while running %s script" %scriptName, v)
         sys.exit(-1)
 elif (scriptName == 'upload-xmlrpc.py'):
     #print(scriptName)
-    #b64 = base64.b64encode(data.encode('utf-8'))
+    #b64 = base64.b64encode(str_data.encode('utf-8'))
     upres = -1
     pares = -1
     spres = -1
     try:
-        upres = proxy.upload(data, len(data))
+        upres = proxy.upload(str_data, len(str_data))
         print(upres)
 
         pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
