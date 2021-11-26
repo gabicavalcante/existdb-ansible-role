@@ -62,7 +62,7 @@
 
 - name: Set admin password (exec set-adminpass.xql)
   #shell: 'bin/client.sh -u admin -P "" -F set-adminpass.xql && touch {{ exist_datadir }}/.password-set'
-  shell: 'contrib/execute-xmlrpc.py -u admin -P {{ exist_ssl_port }} -T < "{{ exist_path }}/set-adminpass.xql" && touch "{{ exist_datadir }}/.password-set"'
+  shell: 'contrib/execute-xmlrpc.py -P {{ exist_http_port }} -T < "{{ exist_path }}/set-adminpass.xql" && touch "{{ exist_datadir }}/.password-set"'
   args:
     chdir: "{{ exist_path }}"
   when: not password_set_file.stat.exists

@@ -74,8 +74,6 @@ if (scriptName == 'execute-xmlrpc.py'):
         print("ERROR while running %s script" %scriptName, v)
         sys.exit(-1)
 elif (scriptName == 'upload-xmlrpc.py'):
-    #print(scriptName)
-    #b64 = base64.b64encode(str_data.encode('utf-8'))
     upres = -1
     pares = -1
     spres = -1
