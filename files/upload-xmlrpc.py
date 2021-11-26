@@ -33,7 +33,7 @@ args = parser.parse_args()
 xmlrpcDebug = args.debug
 xmlrpcTimeout = args.timeout
 xmlrpcUser = args.user
-xmlrpcPass = args.get("pass", "")
+xmlrpcPass = vars(args)['pass']
 xmlrpcHost = args.host
 xmlrpcPort = args.port
 xmlrpcSchema = "https"
@@ -83,7 +83,7 @@ elif (scriptName == 'upload-xmlrpc.py'):
     try:
         upres = proxy.upload(data, len(data))
         logging.info(upres)
-        
+
         pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
         logging.info(pares)
 
