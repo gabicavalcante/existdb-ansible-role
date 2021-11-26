@@ -33,7 +33,7 @@ args = parser.parse_args()
 xmlrpcDebug = args.debug
 xmlrpcTimeout = args.timeout
 xmlrpcUser = args.user
-xmlrpcPass = vargs.get("pass", "")
+xmlrpcPass = args.get("pass", "")
 xmlrpcHost = args.host
 xmlrpcPort = args.port
 xmlrpcSchema = "https"
@@ -70,12 +70,10 @@ if (scriptName == 'execute-xmlrpc.py'):
     startWithResultNumber = 1
     params = {}
     try:
-        print(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
+        logging.info(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
     except Error as v:
-        print("ERROR", v)
+        logging.exception("ERROR while running %s script" %scriptName, v)
         sys.exit(-1)
-    pass
-    sys.exit()
 elif (scriptName == 'upload-xmlrpc.py'):
     #print(scriptName)
     #b64 = base64.b64encode(data.encode('utf-8'))
@@ -84,15 +82,13 @@ elif (scriptName == 'upload-xmlrpc.py'):
     spres = -1
     try:
         upres = proxy.upload(data, len(data))
-        print(upres)
-        #pares = proxy.parseLocalExt(str(upres), fname, replace=1, mime='application/xml', parse=1)
+        logging.info(upres)
+        
         pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
-        print(pares)
-        #spres = proxy.setPermissions(fname, owner='admin', group='SYSTEM', mode='rw-r--r--')
+        logging.info(pares)
+
         spres = proxy.setPermissions(fname, xmlrpcOwner, xmlrpcGroup, xmlrpcMode)
-        print(spres)
+        logging.info(spres)
     except Error as v:
-        print("ERROR", v)
-        sys.exit(-1)
-    pass
-    sys.exit()
+        logging.exception("ERROR while running %s script" %scriptName, v)
+        sys.exit(-1) 
