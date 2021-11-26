@@ -6,6 +6,7 @@ import base64
 import os
 import socket
 import sys
+import logging
 
 from xmlrpc.client import ServerProxy, Error
 
@@ -17,7 +18,7 @@ parser.add_argument("-t", "--timeout", type=int, default=180, help="connection t
 parser.add_argument("-u", "--user", default="admin", help="username to login to eXist XML RPC (default: admin)")
 parser.add_argument("-p", "--pass", default="", help="password to login to eXist XML RPC (default: \"\")")
 parser.add_argument("-H", "--host", default="localhost", help="URL hostname (default: localhost)")
-parser.add_argument("-P", "--port", type=int, default=8080, help="URL port (default: 8443)")
+parser.add_argument("-P", "--port", type=int, default=8443, help="URL port (default: 8443)")
 parser.add_argument("-T", action="store_true", help="disable TLS connection (default: enabled)")
 parser.add_argument("-o", "--owner", default="admin", help="set owner of uploaded file (default: admin)")
 parser.add_argument("-g", "--group", default="SYSTEM", help="set group of uploaded file (default: SYSTEM)")
@@ -28,12 +29,11 @@ parser.add_argument("-L", action="store_true", help="uploaded file is HTML, shor
 parser.add_argument("-B", action="store_true", help="uploaded file is binary [NOT IMPLEMENTED YET]")
 parser.add_argument("file-name", default="", nargs="?", help="name of file to upload")
 args = parser.parse_args()
-#print(args)
 
 xmlrpcDebug = args.debug
 xmlrpcTimeout = args.timeout
 xmlrpcUser = args.user
-xmlrpcPass = vars(args)['pass']
+xmlrpcPass = vargs.get("pass", "")
 xmlrpcHost = args.host
 xmlrpcPort = args.port
 xmlrpcSchema = "https"
@@ -54,57 +54,45 @@ if args.B:
     xmlrpcMime = "application/octet-stream"
 
 scriptName = os.path.basename(sys.argv[0])
-#print(scriptName)
 fname = sys.argv[-1]
-#print(fname)
 
-data = sys.stdin.read().encode()
-#data = "\n".join(sys.stdin.readlines())
-#print(data)
-#sys.exit()
-
-
+input_data = [line for line in sys.stdin.readlines()]
+str_data = "\n".join(input_data)
 
 socket.setdefaulttimeout(xmlrpcTimeout)
 
-with ServerProxy('{xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc'.format(**locals())) as proxy:
-    #print(proxy)
-    if (scriptName == 'execute-xmlrpc.py'):
-        print(scriptName)
-        #xquery = '(<test1/>,<test2/>)'
-        xquery = data
-        limitResultNumberTo = 100 # 0 to disable
-        startWithResultNumber = 1
-        params = {}
-        try:
-            print(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
-        except Error as v:
-            print("ERROR", v)
-            sys.exit(-1)
-        pass
-        sys.exit()
-    elif (scriptName == 'upload-xmlrpc.py'):
-        #print(scriptName)
-        #b64 = base64.b64encode(data.encode('utf-8'))
-        upres = -1
-        pares = -1
-        spres = -1
-        try:
-            #upres = proxy.upload(data, len(base64(data)))
-            upres = proxy.upload(data, len(data))
-            print(upres)
-            #pares = proxy.parseLocalExt(str(upres), fname, replace=1, mime='application/xml', parse=1)
-            pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
-            print(pares)
-            #spres = proxy.setPermissions(fname, owner='admin', group='SYSTEM', mode='rw-r--r--')
-            spres = proxy.setPermissions(fname, xmlrpcOwner, xmlrpcGroup, xmlrpcMode)
-            print(spres)
-        except Error as v:
-            print("ERROR", v)
-            sys.exit(-1)
-        pass
-        sys.exit()
+logging.info("ServerProxy {xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc".format(**locals()))
+proxy = ServerProxy('{xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc'.format(**locals()))
 
-if __name__=='__main__':
-    #print("hello, world!")
+if (scriptName == 'execute-xmlrpc.py'):
+    xquery = str_data
+    limitResultNumberTo = 100 # 0 to disable
+    startWithResultNumber = 1
+    params = {}
+    try:
+        print(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
+    except Error as v:
+        print("ERROR", v)
+        sys.exit(-1)
     pass
+    sys.exit()
+elif (scriptName == 'upload-xmlrpc.py'):
+    #print(scriptName)
+    #b64 = base64.b64encode(data.encode('utf-8'))
+    upres = -1
+    pares = -1
+    spres = -1
+    try:
+        upres = proxy.upload(data, len(data))
+        print(upres)
+        #pares = proxy.parseLocalExt(str(upres), fname, replace=1, mime='application/xml', parse=1)
+        pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
+        print(pares)
+        #spres = proxy.setPermissions(fname, owner='admin', group='SYSTEM', mode='rw-r--r--')
+        spres = proxy.setPermissions(fname, xmlrpcOwner, xmlrpcGroup, xmlrpcMode)
+        print(spres)
+    except Error as v:
+        print("ERROR", v)
+        sys.exit(-1)
+    pass
+    sys.exit()
