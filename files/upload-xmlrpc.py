@@ -6,7 +6,6 @@ import base64
 import os
 import socket
 import sys
-import logging
 
 from xmlrpc.client import ServerProxy, Error
 
@@ -61,7 +60,7 @@ str_data = "\n".join(input_data)
 
 socket.setdefaulttimeout(xmlrpcTimeout)
 
-logging.info("ServerProxy {xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc".format(**locals()))
+print("ServerProxy {xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc".format(**locals()))
 proxy = ServerProxy('{xmlrpcSchema}://{xmlrpcUser}:{xmlrpcPass}@{xmlrpcHost}:{xmlrpcPort}/exist/xmlrpc'.format(**locals()))
 
 if (scriptName == 'execute-xmlrpc.py'):
@@ -70,9 +69,9 @@ if (scriptName == 'execute-xmlrpc.py'):
     startWithResultNumber = 1
     params = {}
     try:
-        logging.info(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
+        print(proxy.query(xquery, limitResultNumberTo, startWithResultNumber, params))
     except Error as v:
-        logging.exception("ERROR while running %s script" %scriptName, v)
+        print("ERROR while running %s script" %scriptName, v)
         sys.exit(-1)
 elif (scriptName == 'upload-xmlrpc.py'):
     #print(scriptName)
@@ -82,13 +81,13 @@ elif (scriptName == 'upload-xmlrpc.py'):
     spres = -1
     try:
         upres = proxy.upload(data, len(data))
-        logging.info(upres)
+        print(upres)
 
         pares = proxy.parseLocalExt(str(upres), fname, 1, xmlrpcMime, xmlrpcParse)
-        logging.info(pares)
+        print(pares)
 
         spres = proxy.setPermissions(fname, xmlrpcOwner, xmlrpcGroup, xmlrpcMode)
-        logging.info(spres)
+        print(spres)
     except Error as v:
-        logging.exception("ERROR while running %s script" %scriptName, v)
+        print("ERROR while running %s script" %scriptName, v)
         sys.exit(-1) 
