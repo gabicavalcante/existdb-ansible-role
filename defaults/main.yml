@@ -212,6 +212,9 @@ exist_debian_extra_packages:
 
 # for Ubuntu xenial
 exist_ubuntu_extra_packages:
+  # for download and unzip the source code
+  - unzip
+  - git
   # for uuidgen, not installed by default
   - uuid-runtime
   # for Ansible
