@@ -14,7 +14,7 @@
 
 - name: Backup installed exist instance
   become: true
-  shell: "{{ exist_path }}/contrib/exist-filebased-backup.sh -i {{ exist_instname }} -u {{ exist_instuser }}"
+  shell: "{{ exist_path }}/contrib/exist-filebased-backup.sh -i {{ exist_instname }} -u {{ exist_instuser }}" -f
   when:
     - exist_is_installed
     - exist_backup_previnstall
